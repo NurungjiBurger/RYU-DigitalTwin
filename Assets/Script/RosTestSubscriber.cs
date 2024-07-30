@@ -6,6 +6,8 @@ using System.Linq;
 
 public class RosTestSubscriber : MonoBehaviour
 {
+    public GameObject UIPanel;
+
     private RosSocket rosSocket;
     public string topicName = "/tf"; // 구독할 토픽 이름
 
@@ -29,6 +31,12 @@ public class RosTestSubscriber : MonoBehaviour
 
         Debug.Log(rosBridgeUrl);
         Debug.Log(rosSocket);
+
+        // Collider가 없으면 추가
+        if (GetComponent<Collider>() == null)
+        {
+            gameObject.AddComponent<BoxCollider>(); // BoxCollider 추가
+        }
     }
 
     private void ReceiveMessage(TFMessage message)
@@ -66,6 +74,21 @@ public class RosTestSubscriber : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // 화면에서 클릭 위치로 레이 발사
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform == transform) // 클릭된 오브젝트가 이 스크립트가 붙은 오브젝트인지 확인
+                {
+                    UIPanel.GetComponent<UIController>().UIOnOff();
+                    // UIOnOff 함수 실행
+                }
+            }
+        }
+
         if (isMoving)
         {
             // 현재 위치에서 목표 위치로 이동
