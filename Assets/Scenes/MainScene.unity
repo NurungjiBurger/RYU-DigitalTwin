@@ -132,7 +132,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3251356633680245159, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
   m_PrefabInstance: {fileID: 2138975119}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &288312436
+--- !u!114 &288312438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,35 +141,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 288312434}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52c4e0463ca724a4fbcf41b8ef4c0787, type: 3}
+  m_Script: {fileID: 11500000, guid: b639007b48b8e09468085b2ca181b2a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Topic: /new_tf
-  TimeStep: 0
-  moveSpeed: 1
-  rotationSpeed: 1
-  moveThreshold: 0.1
-  rotationThreshold: 0.1
-  minX: 8
-  maxX: 40
-  minZ: 5
-  maxZ: 62
---- !u!114 &288312437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 288312434}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff98778ae051cfd40a6e4effdf851ebd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SecondsTimeout: 10
-  Serializer: 0
-  protocol: 0
-  RosBridgeServerUrl: ws://192.168.56.105:9090
+  topicName: /new_tf
+  moveSpeed: 2
+  rotationSpeed: 100
 --- !u!1 &861730197
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,7 +415,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3251356633680245159, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 41.44
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3251356633680245159, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -446,7 +423,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3251356633680245159, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 53.08
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5568772777881998982, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -501,10 +478,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2762099710225197853, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 288312437}
-    - targetCorrespondingSourceObject: {fileID: 2762099710225197853, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 288312436}
+      addedObject: {fileID: 288312438}
   m_SourcePrefab: {fileID: 100100000, guid: a304ad0cb815205409104b7a4b3b76f7, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
