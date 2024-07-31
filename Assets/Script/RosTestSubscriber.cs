@@ -20,8 +20,16 @@ public class RosTestSubscriber : MonoBehaviour
     private bool isMoving = false;
     private bool isRotating = false;
 
+    public int RobotID;
+    public float RobotTemperature;
+    public float WorkTime;
+
     private void Start()
     {
+        RobotID = Random.Range(0, 10000000);
+        RobotTemperature = Random.Range(20.0f, 50.0f);
+        WorkTime = 0;
+
         // ROS WebSocket 서버의 URL
         string rosBridgeUrl = "ws://192.168.56.105:9090"; // 적절한 URL로 수정 필요
         rosSocket = new RosSocket(new RosSharp.RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeUrl));
@@ -29,8 +37,6 @@ public class RosTestSubscriber : MonoBehaviour
         // 토픽 구독
         rosSocket.Subscribe<TFMessage>(topicName, ReceiveMessage);
 
-        Debug.Log(rosBridgeUrl);
-        Debug.Log(rosSocket);
 
         // Collider가 없으면 추가
         if (GetComponent<Collider>() == null)
@@ -41,8 +47,6 @@ public class RosTestSubscriber : MonoBehaviour
 
     private void ReceiveMessage(TFMessage message)
     {
-        Debug.Log("Message Received"); // 메시지 수신 로그
-        Debug.Log(message);
 
         if (message.transforms.Count() > 0)
         {
@@ -66,14 +70,12 @@ public class RosTestSubscriber : MonoBehaviour
             isMoving = true;
             isRotating = true;
         }
-        else
-        {
-            Debug.LogWarning("No transforms found in the received TFMessage.");
-        }
     }
 
     private void Update()
     {
+        WorkTime += Time.deltaTime;
+
         if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // 화면에서 클릭 위치로 레이 발사
@@ -83,7 +85,7 @@ public class RosTestSubscriber : MonoBehaviour
             {
                 if (hit.transform == transform) // 클릭된 오브젝트가 이 스크립트가 붙은 오브젝트인지 확인
                 {
-                    UIPanel.GetComponent<UIController>().UIOnOff();
+                    UIPanel.GetComponent<UIController>().RobotInfoPanel(gameObject);
                     // UIOnOff 함수 실행
                 }
             }
