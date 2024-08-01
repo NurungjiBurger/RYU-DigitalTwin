@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
     public float lookSpeed = 2f;
     public float focusSpeed = 2f;
     public Transform target;
-    public Vector3 offset = new Vector3(0, 5, -5);
+    public Vector3 offset;
 
     public void SettingTarget(GameObject obj)
     {

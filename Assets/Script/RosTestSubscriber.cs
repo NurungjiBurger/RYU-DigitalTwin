@@ -15,10 +15,12 @@ public class RosTestSubscriber : MonoBehaviour
     public float moveSpeed = 2.0f; // 이동 속도
     public float rotationSpeed = 100.0f; // 회전 속도
 
-    private UnityEngine.Vector3 targetPosition;
+    private UnityEngine.Vector3 targetPosition = new UnityEngine.Vector3(12.0f, 0.0f, 10.0f);
     private UnityEngine.Quaternion targetRotation;
     private bool isMoving = false;
     private bool isRotating = false;
+
+    private Rigidbody rb;
 
     public int RobotID;
     public float RobotTemperature;
@@ -29,6 +31,10 @@ public class RosTestSubscriber : MonoBehaviour
         RobotID = Random.Range(0, 10000000);
         RobotTemperature = Random.Range(20.0f, 50.0f);
         WorkTime = 0;
+
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false; // 물리적 이동을 허용
+        rb.freezeRotation = true; // 회전 고정 (옵션)
 
         // ROS WebSocket 서버의 URL
         string rosBridgeUrl = "ws://192.168.56.105:9090"; // 적절한 URL로 수정 필요
@@ -75,6 +81,13 @@ public class RosTestSubscriber : MonoBehaviour
     private void Update()
     {
         WorkTime += Time.deltaTime;
+
+        if (gameObject.name == "AtwoZ")
+        {
+            UnityEngine.Vector3 direction = (targetPosition - transform.position).normalized;
+            UnityEngine.Vector3 moveAmount = direction * moveSpeed * Time.deltaTime;
+            rb.MovePosition(transform.position + moveAmount);
+        }
 
         if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭
         {

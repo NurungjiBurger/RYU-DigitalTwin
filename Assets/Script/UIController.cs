@@ -4,9 +4,14 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Networking;
+using System.Collections;
 
 public class UIController : MonoBehaviour, IPointerClickHandler
 {
+    public string apiUrlBase = "http://localhost:8080/productSector/sectorInfo?SectorName=";
+
+
     public GameObject slotPrefab;
     public Transform content;
     private List<SlotController> slots = new List<SlotController>();
@@ -33,7 +38,7 @@ public class UIController : MonoBehaviour, IPointerClickHandler
     public void RobotInfoPanel(GameObject obj)
     {
         target = obj;
-        UIOnOff();
+        UIOnOff(true);
         if (this.name == "RobotInfoPanel")
         {
             transform.Find("LeftBox").Find("Image").GetComponent<Image>().sprite = target.transform.Find("Image").GetComponent<Image>().sprite;
@@ -45,9 +50,17 @@ public class UIController : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void UIOnOff()
+    private void UIOnOff(bool val)
     {
-        gameObject.SetActive(!gameObject.activeSelf);
+        gameObject.SetActive(val);
+    }
+    public void UIOnOff(GameObject obj)
+    {
+        Debug.Log(obj.name);
+
+        if (obj.name == "Menu") gameObject.SetActive(!gameObject.activeSelf);
+        else if (obj == gameObject) gameObject.SetActive(false);
+        else gameObject.SetActive(true);
     }
     private void Start()
     {
@@ -70,6 +83,8 @@ public class UIController : MonoBehaviour, IPointerClickHandler
     {
         Sector = obj;
         // 더미 데이터 설정
+        //FetchDataFromApi(Sector.name);
+        
         if (Sector.name == "SectorA")
         {
             LoadDummyDataForSectorA();
@@ -77,6 +92,25 @@ public class UIController : MonoBehaviour, IPointerClickHandler
         else if (Sector.name == "SectorB")
         {
             LoadDummyDataForSectorB();
+        }
+        
+    }
+
+    private IEnumerator FetchDataFromApi(string sectorName)
+    {
+        string apiUrl = apiUrlBase + sectorName; // URL 구성
+        UnityWebRequest request = UnityWebRequest.Get(apiUrl);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.LogError("Error fetching data: " + request.error);
+        }
+        else
+        {
+            string jsonResponse = request.downloadHandler.text;
+            currentItems = JsonHelper.FromJson<ItemData>(jsonResponse);
+            InitializeUI(currentItems);
         }
     }
 
@@ -152,4 +186,19 @@ public class ItemData
 {
     public string itemName;  // 물류이름
     public int quantity;     // 수량
+}
+
+public static class JsonHelper
+{
+    public static T[] FromJson<T>(string json)
+    {
+        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
+        return wrapper.Items;
+    }
+
+    [System.Serializable]
+    private class Wrapper<T>
+    {
+        public T[] Items;
+    }
 }

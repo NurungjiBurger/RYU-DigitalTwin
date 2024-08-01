@@ -24,7 +24,7 @@ public class Sector : MonoBehaviour
             {
                 if (hit.transform == transform) // 클릭된 오브젝트가 이 스크립트가 붙은 오브젝트인지 확인
                 {
-                    UIPanel.GetComponent<UIController>().UIOnOff();
+                    UIPanel.GetComponent<UIController>().UIOnOff(gameObject);
                     UIPanel.GetComponent<UIController>().SettingSector(gameObject);
                     // UIOnOff 함수 실행
                 }
