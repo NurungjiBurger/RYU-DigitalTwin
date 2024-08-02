@@ -9,7 +9,7 @@ public class RosTestSubscriber : MonoBehaviour
     public GameObject UIPanel;
 
     private RosSocket rosSocket;
-    public string topicName = "/tf"; // 구독할 토픽 이름
+    public string topicName; // 구독할 토픽 이름
 
     // 이동 및 회전에 대한 설정
     public float moveSpeed = 2.0f; // 이동 속도
@@ -41,7 +41,7 @@ public class RosTestSubscriber : MonoBehaviour
         rosSocket = new RosSocket(new RosSharp.RosBridgeClient.Protocols.WebSocketNetProtocol(rosBridgeUrl));
 
         // 토픽 구독
-        rosSocket.Subscribe<TFMessage>(topicName, ReceiveMessage);
+        if (topicName != null) rosSocket.Subscribe<TFMessage>(topicName, ReceiveMessage);
 
 
         // Collider가 없으면 추가
@@ -137,7 +137,6 @@ public class RosTestSubscriber : MonoBehaviour
     {
         if (rosSocket != null)
         {
-            rosSocket.Unsubscribe(topicName);
             rosSocket.Close();
         }
     }

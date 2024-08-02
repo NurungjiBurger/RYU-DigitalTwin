@@ -29,13 +29,13 @@ public class SlotController : MonoBehaviour
     public void Setup(ItemData itemData)
     {
         // 아이템의 스프라이트를 찾아서 설정
-        name = itemData.itemName;
-        quantity = itemData.quantity;
+        name = itemData.productName;
+        quantity = itemData.productQuantity;
 
         // 컴포넌트 초기화
         image = transform.Find("Image").GetComponent<Image>();
         nameText = transform.Find("Name").GetComponent<TextMeshProUGUI>();
-        this.name = itemData.itemName;
+        this.name = itemData.productName;
 
         // 스프라이트 설정
         Sprite sprite = Resources.Load<Sprite>($"Sprites/{name}"); // "Sprites" 폴더 안에 아이템 이름으로 된 스프라이트가 있어야 합니다.
@@ -55,7 +55,7 @@ public class SlotController : MonoBehaviour
     public void UpdateItem(ItemData itemData)
     {
         // 수량 텍스트만 업데이트
-        nameText.text = itemData.quantity.ToString();
+        nameText.text = itemData.productQuantity.ToString();
     }
 
     public string GetItemName()
