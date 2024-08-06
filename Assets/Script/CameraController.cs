@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour
     public Transform target;
     public Vector3 offset;
 
+    // µû¶ó´Ù´Ò Å¸°Ù ¼³Á¤
     public void SettingTarget(GameObject obj)
     {
         target = obj.GetComponent<Transform>();

@@ -4,7 +4,7 @@
 
 
 
-namespace UnityWarehouseSceneHDRP
+namespace UnityFactorySceneHDRP
 {
 	public class CameraMove : MonoBehaviour
 	{
