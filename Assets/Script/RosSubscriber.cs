@@ -12,7 +12,7 @@ public class RosSubscriber : MonoBehaviour
     // ROS2 연결 설정 변수
     // 소켓, URL, 토픽
     private RosSocket rosSocket;
-    public string socketURL;
+    private string socketURL;
     public string topicName;
 
     // 이동 및 회전에 대한 설정
@@ -35,6 +35,7 @@ public class RosSubscriber : MonoBehaviour
 
     private void Start()
     {
+        socketURL = Data.Instance.ROSUrl;
         // 현재는 랜덤값으로 설정.
         // 차후 ROS2 통신으로 추가적으로 정보를 받아와서 할당할 예정.
         RobotID = Random.Range(0, 10000000);
@@ -44,7 +45,7 @@ public class RosSubscriber : MonoBehaviour
         // ROS WebSocket 서버의 URL
         if (gameObject.name == "AtwoZ")
         {
-            socketURL = "ws://192.168.153.149:9090";
+            //socketURL = "ws://192.168.153.149:9090";
             rosSocket = new RosSocket(new RosSharp.RosBridgeClient.Protocols.WebSocketNetProtocol(socketURL));
 
             // 토픽 구독
@@ -65,11 +66,19 @@ public class RosSubscriber : MonoBehaviour
             // 현실좌표와 가상좌표의 스케일차이가 있으므로 각각 맞춰서 보정
             // 정확하지는 않으나 1550, 1450으로 보정
             // 소수점 몇자리까지 사용할지 미정
+            // z 4 ~ 40
+            // x 7 ~ 42
             UnityEngine.Vector3 translation = new UnityEngine.Vector3(
-                        38.0f + Mathf.Round(-(float)transform.transform.translation.y * 1550) / 100.0f,
+                        38.0f + (Mathf.Round(-(float)transform.transform.translation.y * 1550) / 100.0f),
                         0.0f, // Y값은 사용되지 않음. 날아갈 일 없음
-                        4.0f + Mathf.Round((float)transform.transform.translation.x * 1500) / 100.0f
+                        4.0f + (Mathf.Round((float)transform.transform.translation.x * 1500) / 100.0f)
                     );
+
+            if (translation.z < 4.0f) translation.z = 4.0f;
+            else if (translation.z > 40.0f) translation.z = 40.0f;
+
+            if (translation.x < 7.0f) translation.x = 7.0f;
+            else if (translation.x > 42.0f) translation.x = 42.0f;
 
             // 새로운 목표 위치 계산후 할당
             targetPosition = translation;
@@ -107,6 +116,10 @@ public class RosSubscriber : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+
+    }
     private void Update()
     {
         WorkTime += Time.deltaTime;
