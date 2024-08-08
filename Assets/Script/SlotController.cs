@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 public class SlotController : MonoBehaviour
 {
-    public GameObject target; // 실제로는 사용할 필요 없음, ItemData로 직접 세팅함
+    // 메뉴에서 로봇 리스트를 보여줄 때 필요한 타겟변수
+    public GameObject target;
 
+    // 슬롯에 보여줄 데이터들
+    // 이미지, 이름, 수량
     private Image image;
     private TextMeshProUGUI nameText;
     private string name;
@@ -16,6 +19,7 @@ public class SlotController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // 메뉴에 있는 슬롯들은 시작부터 타겟을 들고 있으므로 바로 초기화하고 이후로 업데이트 되지 않음.
         if (target != null)
         {
             image = target.transform.Find("Image").GetComponent<Image>();
@@ -38,7 +42,7 @@ public class SlotController : MonoBehaviour
         this.name = itemData.productName;
 
         // 스프라이트 설정
-        Sprite sprite = Resources.Load<Sprite>($"Sprites/{name}"); // "Sprites" 폴더 안에 아이템 이름으로 된 스프라이트가 있어야 합니다.
+        Sprite sprite = Resources.Load<Sprite>($"Sprites/{name}");
         if (sprite != null)
         {
             image.sprite = sprite;
