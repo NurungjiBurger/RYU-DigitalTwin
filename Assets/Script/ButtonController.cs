@@ -13,7 +13,7 @@ public class ButtonController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½
+        // ½ÃÀÛ ÈÄ ¹öÆ° ±â´É ÇÒ´ç
         if (gameObject.name == "Home") GetComponent<Button>().onClick.AddListener(() => Data.Instance.GoLoginScene());
         else if (gameObject.name == "RobotMenu") GetComponent<Button>().onClick.AddListener(() => gameObject.transform.Find("RobotPanel").GetComponent<UIController>().UIOnOff(gameObject));
         else if (gameObject.name == "Next") GetComponent<Button>().onClick.AddListener(() => Data.Instance.GoNextScene());

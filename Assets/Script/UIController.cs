@@ -69,7 +69,14 @@ public class UIController : MonoBehaviour, IPointerClickHandler
     // 오브젝트가 겹쳐있을 때 맘대로 켜지고 꺼지지 않도록 하기 위한 처리 함수
     public void UIOnOff(GameObject obj)
     {
-        if (obj.name == "Menu") gameObject.SetActive(!gameObject.activeSelf);
+        if (obj.name == "RobotMenu")
+        {
+            gameObject.SetActive(!gameObject.activeSelf);
+            if (gameObject.activeSelf) obj.GetComponent<ButtonController>().ChangeSprite("right");
+            else obj.GetComponent<ButtonController>().ChangeSprite("left");
+        }
+        else if (obj.name == "Menu") gameObject.SetActive(!gameObject.activeSelf);
+        else if (obj.name == "Cancle") gameObject.SetActive(!gameObject.activeSelf);
         else if (obj == gameObject) gameObject.SetActive(false);
         else gameObject.SetActive(true);
     }
@@ -105,8 +112,6 @@ public class UIController : MonoBehaviour, IPointerClickHandler
         string apiUrl = $"{apiUrlBase}?SectorName={sectorName}";
         UnityWebRequest request = UnityWebRequest.Get(apiUrl);
         yield return request.SendWebRequest();
-
-        Debug.Log(apiUrl);
 
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {

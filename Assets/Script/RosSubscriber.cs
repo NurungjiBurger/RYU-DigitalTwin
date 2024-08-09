@@ -69,9 +69,9 @@ public class RosSubscriber : MonoBehaviour
             // z 4 ~ 40
             // x 7 ~ 42
             UnityEngine.Vector3 translation = new UnityEngine.Vector3(
-                        38.0f + (Mathf.Round(-(float)transform.transform.translation.y * 1550) / 100.0f),
+                        38.0f + (Mathf.Round(-(float)transform.transform.translation.y * 1580) / 100.0f),
                         0.0f, // Y값은 사용되지 않음. 날아갈 일 없음
-                        4.0f + (Mathf.Round((float)transform.transform.translation.x * 1500) / 100.0f)
+                        4.0f + (Mathf.Round((float)transform.transform.translation.x * 1550) / 100.0f)
                     );
 
             if (translation.z < 4.0f) translation.z = 4.0f;
@@ -116,6 +116,11 @@ public class RosSubscriber : MonoBehaviour
         }
     }
 
+    public void UIOnOff()
+    {
+        UIPanel.GetComponent<UIController>().RobotInfoPanel(gameObject);
+    }
+
     private void Awake()
     {
 
@@ -124,22 +129,9 @@ public class RosSubscriber : MonoBehaviour
     {
         WorkTime += Time.deltaTime;
 
-        // 마우스 왼쪽 버튼 클릭이 들어왔다면
-        if (Input.GetMouseButtonDown(0))
+        if (UIPanel == null)
         {
-            // 화면에서 클릭 위치로 레이 발사
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                // 클릭된 오브젝트가 이 스크립트가 붙은 오브젝트인지 확인
-                if (hit.transform == transform)
-                {
-                    // UIOnOff 함수 실행
-                    UIPanel.GetComponent<UIController>().RobotInfoPanel(gameObject);
-                }
-            }
+            UIPanel = GameObject.Find("Canvas").transform.Find("RobotInfoPanel").gameObject;
         }
 
         // 움직일 수 있는 상태라면
