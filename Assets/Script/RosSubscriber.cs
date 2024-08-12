@@ -69,9 +69,9 @@ public class RosSubscriber : MonoBehaviour
             // z 4 ~ 40
             // x 7 ~ 42
             UnityEngine.Vector3 translation = new UnityEngine.Vector3(
-                        38.0f + (Mathf.Round(-(float)transform.transform.translation.y * 1580) / 100.0f),
+                        34.0f + (Mathf.Round(-(float)transform.transform.translation.y * 1550000) / 100000.0f),
                         0.0f, // Y값은 사용되지 않음. 날아갈 일 없음
-                        4.0f + (Mathf.Round((float)transform.transform.translation.x * 1550) / 100.0f)
+                        4.0f + (Mathf.Round((float)transform.transform.translation.x * 1600000) / 100000.0f)
                     );
 
             if (translation.z < 4.0f) translation.z = 4.0f;
@@ -94,10 +94,10 @@ public class RosSubscriber : MonoBehaviour
             // 우   -> z - 0.7 w 0.7
 
             // 회전 데이터 추출 (소수점 4자리 반올림)
-            float x = Mathf.Round((float)transform.transform.rotation.x * 10000) / 10000.0f;
-            float y = Mathf.Round((float)transform.transform.rotation.y * 10000) / 10000.0f;
-            float z = Mathf.Round((float)transform.transform.rotation.z * 10000) / 10000.0f;
-            float w = Mathf.Round((float)transform.transform.rotation.w * 10000) / 10000.0f;
+            float x = Mathf.Round((float)transform.transform.rotation.x * 100000) / 100000.0f;
+            float y = Mathf.Round((float)transform.transform.rotation.y * 100000) / 100000.0f;
+            float z = Mathf.Round((float)transform.transform.rotation.z * 100000) / 100000.0f;
+            float w = Mathf.Round((float)transform.transform.rotation.w * 100000) / 100000.0f;
 
 
             // 받은 회전값으로부터 회전 Quaternion 생성

@@ -12,21 +12,24 @@ using Newtonsoft.Json.Linq;
 
 public class UIController : MonoBehaviour, IPointerClickHandler
 {
-    // http request¸¦ ³¯¸± ÁÖ¼Ò
+    // http requestë¥¼ ë‚ ë¦´ ì£¼ì†Œ
     public string apiUrlBase;
-    // ¼½ÅÍ Á¤º¸¸¦ Ç¥½ÃÇÒ ¶§ ¹°·ù Á¤º¸¸¦ µ¿ÀûÀ¸·Î ¹Ş¾Æ¿Í¼­ »ı¼ºÇØÁÖ±â À§ÇÑ ½½·Ô ÇÁ¸®ÆÕ
+    // ì„¹í„° ì •ë³´ë¥¼ í‘œì‹œí•  ë•Œ ë¬¼ë¥˜ ì •ë³´ë¥¼ ë™ì ìœ¼ë¡œ ë°›ì•„ì™€ì„œ ìƒì„±í•´ì£¼ê¸° ìœ„í•œ ìŠ¬ë¡¯ í”„ë¦¬íŒ¹
     public GameObject slotPrefab;
-    // ¼½ÅÍ Á¤º¸¸¦ µ¿ÀûÀ¸·Î Ç¥½ÃÇÒ ¶§ µ¥ÀÌÅÍ¸¦ Ç¥½ÃÇØ ÁÙ ÄÁÅ×ÀÌ³Ê
+    // ì„¹í„° ì •ë³´ë¥¼ ë™ì ìœ¼ë¡œ í‘œì‹œí•  ë•Œ ë°ì´í„°ë¥¼ í‘œì‹œí•´ ì¤„ ì»¨í…Œì´ë„ˆ
     public Transform content;
-    // ¼½ÅÍ Á¤º¸¸¦ µ¿ÀûÀ¸·Î Ç¥½ÃÇÒ ¶§ Ç¥ÇöµÉ µ¥ÀÌÅÍµé
+    // ì„¹í„° ì •ë³´ë¥¼ ë™ì ìœ¼ë¡œ í‘œì‹œí•  ë•Œ í‘œí˜„ë  ë°ì´í„°ë“¤
     private List<SlotController> slots = new List<SlotController>();
-    // ´õ¹Ì µ¥ÀÌÅÍ ¹è¿­
+    // ë”ë¯¸ ë°ì´í„° ë°°ì—´
     private ItemData[] currentItems;
-    // ÇöÀç ¼±ÅÃµÈ ¼½ÅÍ
+    // í˜„ì¬ ì„ íƒëœ ì„¹í„°
     private GameObject Sector;
 
-    // ÇöÀç ¼±ÅÃµÈ ·Îº¿ ´ë»ó
+    // í˜„ì¬ ì„ íƒëœ ë¡œë´‡ ëŒ€ìƒ
     private GameObject target;
+
+    // íƒ€ì´ë¨¸
+    private float Timer;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -34,39 +37,39 @@ public class UIController : MonoBehaviour, IPointerClickHandler
     }
     private string TranslateTime(int timeData)
     {
-        // ÀÛ¾÷ ½Ã°£À» Æ÷¸ÅÆÃÇØ¼­ º¸¿©ÁÖ±â À§ÇÑ º¯È¯ ÀÛ¾÷
+        // ì‘ì—… ì‹œê°„ì„ í¬ë§¤íŒ…í•´ì„œ ë³´ì—¬ì£¼ê¸° ìœ„í•œ ë³€í™˜ ì‘ì—…
         int hours = timeData / 3600;
         int minutes = (timeData % 3600) / 60;
         int seconds = timeData % 60;
 
-        // µÎ ÀÚ¸® ¼ıÀÚ·Î Æ÷¸ËÆÃ
+        // ë‘ ìë¦¬ ìˆ«ìë¡œ í¬ë§·íŒ…
         string str = $"{hours:D2} : {minutes:D2} : {seconds:D2}";
         return str;
     }
-    // ·Îº¿ ÀÎÆ÷ ÆĞ³ÎÀ» Á¦¾îÇÏ±â À§ÇÑ ÇÔ¼ö
+    // ë¡œë´‡ ì¸í¬ íŒ¨ë„ì„ ì œì–´í•˜ê¸° ìœ„í•œ í•¨ìˆ˜
     public void RobotInfoPanel(GameObject obj)
     {
         target = obj;
         UIOnOff(true);
         if (this.name == "RobotInfoPanel")
         {
-            // ·Îº¿¿¡°Ô¼­ Á¤º¸¸¦ ¹Ş¾Æ¿Í¼­ ¾÷µ¥ÀÌÆ®
+            // ë¡œë´‡ì—ê²Œì„œ ì •ë³´ë¥¼ ë°›ì•„ì™€ì„œ ì—…ë°ì´íŠ¸
             transform.Find("LeftBox").Find("Image").GetComponent<Image>().sprite = target.transform.Find("Image").GetComponent<Image>().sprite;
             transform.Find("LeftBox").Find("RobotName").GetComponent<TextMeshProUGUI>().text = target.name;
 
             transform.Find("RightBox").Find("RobotID").GetComponent<TextMeshProUGUI>().text = target.GetComponent<RosSubscriber>().RobotID.ToString();
-            transform.Find("RightBox").Find("RobotTemperature").GetComponent<TextMeshProUGUI>().text = $"{target.GetComponent<RosSubscriber>().RobotTemperature:F1}¡ÆC";
+            transform.Find("RightBox").Find("RobotTemperature").GetComponent<TextMeshProUGUI>().text = $"{target.GetComponent<RosSubscriber>().RobotTemperature:F1}Â°C";
             transform.Find("RightBox").Find("RobotWorkTime").GetComponent<TextMeshProUGUI>().text = TranslateTime((int)target.GetComponent<RosSubscriber>().WorkTime);
         }
     }
 
-    // UI ÄÑ°í ²ô±â À§ÇÑ ÇÔ¼ö
+    // UI ì¼œê³  ë„ê¸° ìœ„í•œ í•¨ìˆ˜
     private void UIOnOff(bool val)
     {
         gameObject.SetActive(val);
     }
 
-    // ¿ÀºêÁ§Æ®°¡ °ãÃÄÀÖÀ» ¶§ ¸¾´ë·Î ÄÑÁö°í ²¨ÁöÁö ¾Êµµ·Ï ÇÏ±â À§ÇÑ Ã³¸® ÇÔ¼ö
+    // ì˜¤ë¸Œì íŠ¸ê°€ ê²¹ì³ìˆì„ ë•Œ ë§˜ëŒ€ë¡œ ì¼œì§€ê³  êº¼ì§€ì§€ ì•Šë„ë¡ í•˜ê¸° ìœ„í•œ ì²˜ë¦¬ í•¨ìˆ˜
     public void UIOnOff(GameObject obj)
     {
         if (obj.name == "RobotMenu")
@@ -82,17 +85,24 @@ public class UIController : MonoBehaviour, IPointerClickHandler
     }
     private void Start()
     {
-        // ½ÃÀÛµÇÀÚ¸¶ÀÚ ¸Ş´º ¹öÆ°À» Á¦¿ÜÇÑ ¸ğµç UI´Â »ç¿ëÀÚ¿¡°Ô º¸ÀÌ¸é ¾ÈµÈ´Ù
+        // ì‹œì‘ë˜ìë§ˆì ë©”ë‰´ ë²„íŠ¼ì„ ì œì™¸í•œ ëª¨ë“  UIëŠ” ì‚¬ìš©ìì—ê²Œ ë³´ì´ë©´ ì•ˆëœë‹¤
         gameObject.SetActive(false);
+
+        Timer = 0.0f;
     }
 
     private void FixedUpdate()
     {
-        // ¿ÀºêÁ§Æ®°¡ È°¼ºÈ­µÈ »óÅÂ¶ó¸é
+        Timer += Time.deltaTime;
+        // ì˜¤ë¸Œì íŠ¸ê°€ í™œì„±í™”ëœ ìƒíƒœë¼ë©´
         if (gameObject.activeSelf)
         {
-            // Á¤º¸ ¾÷µ¥ÀÌÆ®
-            if (this.name == "MullyuInfoPanel") FetchDataFromApi(Sector.name);
+            // ì •ë³´ ì—…ë°ì´íŠ¸
+            if (this.name == "MullyuInfoPanel" && Timer > 2.0f)
+            {
+                StartCoroutine(FetchDataFromApi(Sector.name));
+                Timer = 0.0f;
+            }
             else if (this.name == "RobotInfoPanel") transform.Find("RightBox").Find("RobotWorkTime").GetComponent<TextMeshProUGUI>().text = TranslateTime((int)target.GetComponent<RosSubscriber>().WorkTime);
         }
     }
@@ -100,13 +110,13 @@ public class UIController : MonoBehaviour, IPointerClickHandler
     public void SettingSector(GameObject obj)
     {
         Sector = obj;
-        // µ¥ÀÌÅÍ ¼³Á¤
-        // ¼­¹ö·ÎºÎÅÍ µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¿Í¼­ ¸¸µé¾î¾ßÇÏ´Â ÀÛ¾÷ÀÌ¹Ç·Î ÄÚ·çÆ¾À¸·Î ºñµ¿±â ÀÛ¾÷À¸·Î ½ÇÇà
+        // ë°ì´í„° ì„¤ì •
+        // ì„œë²„ë¡œë¶€í„° ë°ì´í„°ë¥¼ ë°›ì•„ì™€ì„œ ë§Œë“¤ì–´ì•¼í•˜ëŠ” ì‘ì—…ì´ë¯€ë¡œ ì½”ë£¨í‹´ìœ¼ë¡œ ë¹„ë™ê¸° ì‘ì—…ìœ¼ë¡œ ì‹¤í–‰
         StartCoroutine(FetchDataFromApi(Sector.name));
         
     }
 
-    // ºñµ¿±â ÀÛ¾÷ ÁøÇà µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¿À´Â ÇÔ¼ö
+    // ë¹„ë™ê¸° ì‘ì—… ì§„í–‰ ë°ì´í„°ë¥¼ ë°›ì•„ì˜¤ëŠ” í•¨ìˆ˜
     private IEnumerator FetchDataFromApi(string sectorName)
     {
         string apiUrl = $"{apiUrlBase}?SectorName={sectorName}";
@@ -121,22 +131,22 @@ public class UIController : MonoBehaviour, IPointerClickHandler
         {
             string jsonResponse = request.downloadHandler.text;
 
-            // JSON µ¥ÀÌÅÍ¸¦ ÆÄ½ÌÇÏ¿© ItemData[]·Î º¯È¯
-            // ÀÏ¹İÀûÀ¸·Î Á¦°øµÇ´Â JsonUtility´Â Ä¿½ºÅÒ JSONµéÀ» Á¦´ë·Î º¯È¯ÇØÁÖÁö ¸øÇÔ ...
+            // JSON ë°ì´í„°ë¥¼ íŒŒì‹±í•˜ì—¬ ItemData[]ë¡œ ë³€í™˜
+            // ì¼ë°˜ì ìœ¼ë¡œ ì œê³µë˜ëŠ” JsonUtilityëŠ” ì»¤ìŠ¤í…€ JSONë“¤ì„ ì œëŒ€ë¡œ ë³€í™˜í•´ì£¼ì§€ ëª»í•¨ ...
             try
             {
                 JObject jsonObject = JObject.Parse(jsonResponse);
 
-                // ¼½ÅÍ ÀÌ¸§À» Å°·Î »ç¿ëÇÏ¿© ¼½ÅÍ µ¥ÀÌÅÍ¸¦ ÃßÃâ
+                // ì„¹í„° ì´ë¦„ì„ í‚¤ë¡œ ì‚¬ìš©í•˜ì—¬ ì„¹í„° ë°ì´í„°ë¥¼ ì¶”ì¶œ
                 JArray itemArray = (JArray)jsonObject[sectorName];
 
-                // ItemData ¹è¿­·Î º¯È¯
+                // ItemData ë°°ì—´ë¡œ ë³€í™˜
                 List<ItemData> itemList = itemArray.ToObject<List<ItemData>>();
 
-                // currentItems¿¡ µ¥ÀÌÅÍ ÇÒ´ç
+                // currentItemsì— ë°ì´í„° í• ë‹¹
                 currentItems = itemList.ToArray();
 
-                // UI ÃÊ±âÈ­
+                // UI ì´ˆê¸°í™”
                 InitializeUI(currentItems, sectorName);
             }
             catch (JsonException e)
@@ -148,11 +158,11 @@ public class UIController : MonoBehaviour, IPointerClickHandler
 
     private void InitializeUI(ItemData[] items, string sectorName)
     {
-        // ±âÁ¸ ½½·Ô Á¦°Å
+        // ê¸°ì¡´ ìŠ¬ë¡¯ ì œê±°
         slots.Clear();
         foreach (Transform child in content)
         {
-            // ¼½ÅÍ ÀÌ¸§ ¾÷µ¥ÀÌÆ®
+            // ì„¹í„° ì´ë¦„ ì—…ë°ì´íŠ¸
             if (child.gameObject.name == "SectorName")
             {
                 child.gameObject.transform.GetComponent<TextMeshProUGUI>().text = "Sector" + sectorName;
@@ -161,7 +171,7 @@ public class UIController : MonoBehaviour, IPointerClickHandler
             Destroy(child.gameObject);
         }
 
-        // »õ ½½·Ô »ı¼º
+        // ìƒˆ ìŠ¬ë¡¯ ìƒì„±
         foreach (var item in items)
         {
             GameObject slot = Instantiate(slotPrefab, content);
@@ -183,8 +193,8 @@ public class UIController : MonoBehaviour, IPointerClickHandler
 [System.Serializable]
 public class ItemData
 {
-    public string productName;  // ¹°·ùÀÌ¸§
-    public int productQuantity;     // ¼ö·®
+    public string productName;  // ë¬¼ë¥˜ì´ë¦„
+    public int productQuantity;     // ìˆ˜ëŸ‰
 
     public ItemData(string name, int quantity)
     {

@@ -13,7 +13,6 @@ public class SlotController : MonoBehaviour
     // 이미지, 이름, 수량
     private Image image;
     private TextMeshProUGUI nameText;
-    private string name;
     private int quantity;
 
     // Start is called before the first frame update
