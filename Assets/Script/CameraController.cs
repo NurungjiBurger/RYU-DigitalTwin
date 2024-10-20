@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    // ÃÊ±â¿¡ Ä«¸Ş¶ó°¡ µû¶ó´Ù´Ò Å¸°Ù ¼³Á¤
+    // ì´ˆê¸°ì— ì¹´ë©”ë¼ê°€ ë”°ë¼ë‹¤ë‹ íƒ€ê²Ÿ ì„¤ì •
     public GameObject initTarget;
 
-    // Ä«¸Ş¶ó ¿ÀºêÁ§Æ®
+    // ì¹´ë©”ë¼ ì˜¤ë¸Œì íŠ¸
     public Camera mainCamera;
 
-    // ¿òÁ÷ÀÌ´Â ¼Óµµ¸¦ Á¦¾îÇÒ º¯¼öµé
+    // ì›€ì§ì´ëŠ” ì†ë„ë¥¼ ì œì–´í•  ë³€ìˆ˜ë“¤
     public float moveSpeed = 10f;
     public float lookSpeed = 2f;
     public float focusSpeed = 2f;
-    // Ä«¸Ş¶óÀÇ À§Ä¡ ¹üÀ§
+    // ì¹´ë©”ë¼ì˜ ìœ„ì¹˜ ë²”ìœ„
     public Vector2 xRange = new Vector2(7f, 42f);
     public Vector2 zRange = new Vector2(4f, 40f);
 
-    // ÃÊ±â X »ç¿ëÀÚ°¡ ¼±ÅÃÇÑ Å¸°Ù
+    // ì´ˆê¸° X ì‚¬ìš©ìê°€ ì„ íƒí•œ íƒ€ê²Ÿ
     public Transform target;
 
-    // Ä«¸Ş¶ó°¡ ¶³¾îÁø °Å¸®
+    // ì¹´ë©”ë¼ê°€ ë–¨ì–´ì§„ ê±°ë¦¬
     public Vector3 offset;
 
-    // µû¶ó´Ù´Ò Å¸°Ù ¼³Á¤ ÇÔ¼ö
+    // ë”°ë¼ë‹¤ë‹ íƒ€ê²Ÿ ì„¤ì • í•¨ìˆ˜
     public void SettingTarget(GameObject obj)
     {
         target = obj.GetComponent<Transform>();
@@ -40,31 +40,31 @@ public class CameraController : MonoBehaviour
     {
         if (target == null)
         {
-            return; // Å¸°ÙÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò´Ù¸é ¾÷µ¥ÀÌÆ®ÇÏÁö ¾ÊÀ½
+            return; // íƒ€ê²Ÿì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ì—…ë°ì´íŠ¸í•˜ì§€ ì•ŠìŒ
         }
 
         UpdateCameraPosition();
     }
 
-    // Ä«¸Ş¶ó À§Ä¡ ¾÷µ¥ÀÌÆ®
+    // ì¹´ë©”ë¼ ìœ„ì¹˜ ì—…ë°ì´íŠ¸
     private void UpdateCameraPosition()
     {
         if (target == null)
         {
-            return; // Å¸°ÙÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò´Ù¸é À§Ä¡ ¾÷µ¥ÀÌÆ®ÇÏÁö ¾ÊÀ½
+            return; // íƒ€ê²Ÿì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ë‹¤ë©´ ìœ„ì¹˜ ì—…ë°ì´íŠ¸í•˜ì§€ ì•ŠìŒ
         }
 
-        // Ä«¸Ş¶óÀÇ À§Ä¡¸¦ ´ë»ó¿¡¼­ ¿ÀÇÁ¼Â¸¸Å­ ¶³¾îÁø °÷¿¡ ¼³Á¤
+        // ì¹´ë©”ë¼ì˜ ìœ„ì¹˜ë¥¼ ëŒ€ìƒì—ì„œ ì˜¤í”„ì…‹ë§Œí¼ ë–¨ì–´ì§„ ê³³ì— ì„¤ì •
         Vector3 desiredPosition = target.position - target.forward * Mathf.Abs(offset.z) + Vector3.up * offset.y;
 
-        // Ä«¸Ş¶ó À§Ä¡¸¦ ¹üÀ§ ³»·Î Á¦ÇÑ
+        // ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ ë²”ìœ„ ë‚´ë¡œ ì œí•œ
         desiredPosition.x = Mathf.Clamp(desiredPosition.x, xRange.x, xRange.y);
         desiredPosition.z = Mathf.Clamp(desiredPosition.z, zRange.x, zRange.y);
 
-        // Ä«¸Ş¶ó°¡ ºÎµå·´°Ô ÇØ´ç ÁÂÇ¥·Î ÀÌµ¿ÇÒ ¼ö ÀÖµµ·Ï ÇÔ.
+        // ì¹´ë©”ë¼ê°€ ë¶€ë“œëŸ½ê²Œ í•´ë‹¹ ì¢Œí‘œë¡œ ì´ë™í•  ìˆ˜ ìˆë„ë¡ í•¨.
         mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position, desiredPosition, Time.deltaTime * focusSpeed);
 
-        // Ä«¸Ş¶ó°¡ Ç×»ó ´ë»óÀ» ¹Ù¶óº¸µµ·Ï ¼³Á¤ÇÕ´Ï´Ù.
+        // ì¹´ë©”ë¼ê°€ í•­ìƒ ëŒ€ìƒì„ ë°”ë¼ë³´ë„ë¡ ì„¤ì •í•©ë‹ˆë‹¤.
         mainCamera.transform.LookAt(target.position);
     }
    

@@ -6,29 +6,29 @@ using System.Linq;
 
 public class RosSubscriber : MonoBehaviour
 {
-    // ·Îº¿ÀÌ ´­·ÈÀ» ¶§ ÄÑÁú UI ¼³Á¤
+    // ë¡œë´‡ì´ ëˆŒë ¸ì„ ë•Œ ì¼œì§ˆ UI ì„¤ì •
     public GameObject UIPanel;
 
-    // ROS2 ¿¬°á ¼³Á¤ º¯¼ö
-    // ¼ÒÄÏ, URL, ÅäÇÈ
+    // ROS2 ì—°ê²° ì„¤ì • ë³€ìˆ˜
+    // ì†Œì¼“, URL, í† í”½
     private RosSocket rosSocket;
     private string socketURL;
     public string topicName;
 
-    // ÀÌµ¿ ¹× È¸Àü¿¡ ´ëÇÑ ¼³Á¤
-    // ÀÌµ¿ ¼Óµµ¿Í È¸Àü ¼Óµµ
+    // ì´ë™ ë° íšŒì „ì— ëŒ€í•œ ì„¤ì •
+    // ì´ë™ ì†ë„ì™€ íšŒì „ ì†ë„
     public float moveSpeed;
     public float rotationSpeed;
 
-    // ¸ñÇ¥ ÁÂÇ¥¿Í ¸ñÇ¥ È¸Àü ¹æÇâ
+    // ëª©í‘œ ì¢Œí‘œì™€ ëª©í‘œ íšŒì „ ë°©í–¥
     public UnityEngine.Vector3 targetPosition;
     public UnityEngine.Quaternion targetRotation;
 
-    // ¿òÁ÷ÀÓ Á¦¾î º¯¼ö
+    // ì›€ì§ì„ ì œì–´ ë³€ìˆ˜
     private bool isMoving = false;
     private bool isRotating = false;
 
-    // ·Îº¿¿¡ ´ëÇØ º¸¿©ÁÙ Ãß°¡ÀûÀÎ Á¤º¸¸¦ ´ãÀ» º¯¼ö
+    // ë¡œë´‡ì— ëŒ€í•´ ë³´ì—¬ì¤„ ì¶”ê°€ì ì¸ ì •ë³´ë¥¼ ë‹´ì„ ë³€ìˆ˜
     public int RobotID;
     public float RobotTemperature;
     public float WorkTime;
@@ -36,19 +36,19 @@ public class RosSubscriber : MonoBehaviour
     private void Start()
     {
         socketURL = Data.Instance.ROSUrl;
-        // ÇöÀç´Â ·£´ı°ªÀ¸·Î ¼³Á¤.
-        // Â÷ÈÄ ROS2 Åë½ÅÀ¸·Î Ãß°¡ÀûÀ¸·Î Á¤º¸¸¦ ¹Ş¾Æ¿Í¼­ ÇÒ´çÇÒ ¿¹Á¤.
+        // í˜„ì¬ëŠ” ëœë¤ê°’ìœ¼ë¡œ ì„¤ì •.
+        // ì°¨í›„ ROS2 í†µì‹ ìœ¼ë¡œ ì¶”ê°€ì ìœ¼ë¡œ ì •ë³´ë¥¼ ë°›ì•„ì™€ì„œ í• ë‹¹í•  ì˜ˆì •.
         RobotID = Random.Range(0, 10000000);
         RobotTemperature = Random.Range(20.0f, 50.0f);
         WorkTime = 0;
 
-        // ROS WebSocket ¼­¹öÀÇ URL
+        // ROS WebSocket ì„œë²„ì˜ URL
         if (gameObject.name == "AtwoZ")
         {
             //socketURL = "ws://192.168.153.149:9090";
             rosSocket = new RosSocket(new RosSharp.RosBridgeClient.Protocols.WebSocketNetProtocol(socketURL));
 
-            // ÅäÇÈ ±¸µ¶
+            // í† í”½ êµ¬ë…
             if (topicName != null) rosSocket.Subscribe<TFMessage>(topicName, ReceiveMessage);
         }
     }
@@ -57,20 +57,20 @@ public class RosSubscriber : MonoBehaviour
     {
         if (message.transforms.Count() > 0)
         {
-            // Ã¹ ¹øÂ° TransformStamped ¸Ş½ÃÁö ÃßÃâ
+            // ì²« ë²ˆì§¸ TransformStamped ë©”ì‹œì§€ ì¶”ì¶œ
             TransformStamped transform = message.transforms[0];
 
-            //  Çö½Ç      °¡»ó
-            // x Áõ°¡ -> z Áõ°¡
-            // y Áõ°¡ -> x °¨¼Ò
-            // Çö½ÇÁÂÇ¥¿Í °¡»óÁÂÇ¥ÀÇ ½ºÄÉÀÏÂ÷ÀÌ°¡ ÀÖÀ¸¹Ç·Î °¢°¢ ¸ÂÃç¼­ º¸Á¤
-            // Á¤È®ÇÏÁö´Â ¾ÊÀ¸³ª 1550, 1450À¸·Î º¸Á¤
-            // ¼Ò¼öÁ¡ ¸îÀÚ¸®±îÁö »ç¿ëÇÒÁö ¹ÌÁ¤
+            //  í˜„ì‹¤      ê°€ìƒ
+            // x ì¦ê°€ -> z ì¦ê°€
+            // y ì¦ê°€ -> x ê°ì†Œ
+            // í˜„ì‹¤ì¢Œí‘œì™€ ê°€ìƒì¢Œí‘œì˜ ìŠ¤ì¼€ì¼ì°¨ì´ê°€ ìˆìœ¼ë¯€ë¡œ ê°ê° ë§ì¶°ì„œ ë³´ì •
+            // ì •í™•í•˜ì§€ëŠ” ì•Šìœ¼ë‚˜ 1550, 1450ìœ¼ë¡œ ë³´ì •
+            // ì†Œìˆ˜ì  ëª‡ìë¦¬ê¹Œì§€ ì‚¬ìš©í• ì§€ ë¯¸ì •
             // z 4 ~ 40
             // x 7 ~ 42
             UnityEngine.Vector3 translation = new UnityEngine.Vector3(
                         34.0f + (Mathf.Round(-(float)transform.transform.translation.y * 1550000) / 100000.0f),
-                        0.0f, // Y°ªÀº »ç¿ëµÇÁö ¾ÊÀ½. ³¯¾Æ°¥ ÀÏ ¾øÀ½
+                        0.0f, // Yê°’ì€ ì‚¬ìš©ë˜ì§€ ì•ŠìŒ. ë‚ ì•„ê°ˆ ì¼ ì—†ìŒ
                         4.0f + (Mathf.Round((float)transform.transform.translation.x * 1600000) / 100000.0f)
                     );
 
@@ -80,37 +80,37 @@ public class RosSubscriber : MonoBehaviour
             if (translation.x < 7.0f) translation.x = 7.0f;
             else if (translation.x > 42.0f) translation.x = 42.0f;
 
-            // »õ·Î¿î ¸ñÇ¥ À§Ä¡ °è»êÈÄ ÇÒ´ç
+            // ìƒˆë¡œìš´ ëª©í‘œ ìœ„ì¹˜ ê³„ì‚°í›„ í• ë‹¹
             targetPosition = translation;
 
-            // translation °ª µğ¹ö±ë ....
+            // translation ê°’ ë””ë²„ê¹… ....
             Debug.Log($"Translation - x: {transform.transform.translation.x}, y: {transform.transform.translation.y}, z: {transform.transform.translation.z}");
             Debug.Log($"Calculated Target Position - x: {targetPosition.x}, y: {targetPosition.y}, z: {targetPosition.z}");
 
-            // Çö½Ç¿¡¼­ µé¾î¿À´Â ¹æÇâ µ¥ÀÌÅÍ
-            // Á÷Áø -> z   0   w 1
-            // ÈÄÁø -> z - 1   w 0
-            // ÁÂ   -> z   0.7 w 0.7
-            // ¿ì   -> z - 0.7 w 0.7
+            // í˜„ì‹¤ì—ì„œ ë“¤ì–´ì˜¤ëŠ” ë°©í–¥ ë°ì´í„°
+            // ì§ì§„ -> z   0   w 1
+            // í›„ì§„ -> z - 1   w 0
+            // ì¢Œ   -> z   0.7 w 0.7
+            // ìš°   -> z - 0.7 w 0.7
 
-            // È¸Àü µ¥ÀÌÅÍ ÃßÃâ (¼Ò¼öÁ¡ 4ÀÚ¸® ¹İ¿Ã¸²)
+            // íšŒì „ ë°ì´í„° ì¶”ì¶œ (ì†Œìˆ˜ì  4ìë¦¬ ë°˜ì˜¬ë¦¼)
             float x = Mathf.Round((float)transform.transform.rotation.x * 100000) / 100000.0f;
             float y = Mathf.Round((float)transform.transform.rotation.y * 100000) / 100000.0f;
             float z = Mathf.Round((float)transform.transform.rotation.z * 100000) / 100000.0f;
             float w = Mathf.Round((float)transform.transform.rotation.w * 100000) / 100000.0f;
 
 
-            // ¹ŞÀº È¸Àü°ªÀ¸·ÎºÎÅÍ È¸Àü Quaternion »ı¼º
+            // ë°›ì€ íšŒì „ê°’ìœ¼ë¡œë¶€í„° íšŒì „ Quaternion ìƒì„±
             UnityEngine.Quaternion newRotation = new UnityEngine.Quaternion(0, -z, 0, w);
 
-            // È¸Àü °è»ê ÈÄ ÇÒ´ç
+            // íšŒì „ ê³„ì‚° í›„ í• ë‹¹
             targetRotation = newRotation;
 
-            // rotation °ª µğ¹ö±ë ....
+            // rotation ê°’ ë””ë²„ê¹… ....
             Debug.Log($"Rotation - x: {transform.transform.rotation.x}, y: {transform.transform.rotation.y}, z: {transform.transform.rotation.z}, w: {transform.transform.rotation.w}");
             Debug.Log($"Calculated Target Rotation - x: {targetRotation.eulerAngles.x}, y: {targetRotation.eulerAngles.y}, z: {targetRotation.eulerAngles.z}");
 
-            // ÀÌµ¿ ¹× È¸Àü ½ÃÀÛÀ» À§ÇÑ º¯¼ö ¼³Á¤
+            // ì´ë™ ë° íšŒì „ ì‹œì‘ì„ ìœ„í•œ ë³€ìˆ˜ ì„¤ì •
             isMoving = true;
             isRotating = true;
         }
@@ -134,16 +134,16 @@ public class RosSubscriber : MonoBehaviour
             UIPanel = GameObject.Find("Canvas").transform.Find("RobotInfoPanel").gameObject;
         }
 
-        // ¿òÁ÷ÀÏ ¼ö ÀÖ´Â »óÅÂ¶ó¸é
+        // ì›€ì§ì¼ ìˆ˜ ìˆëŠ” ìƒíƒœë¼ë©´
         if (isMoving)
         {
-            // ÇöÀç À§Ä¡¿¡¼­ ¸ñÇ¥ À§Ä¡·Î ÀÌµ¿ÇÒ °Í
-            // ¸Å ÇÁ·¹ÀÓ ÀÌµ¿ °Å¸®
+            // í˜„ì¬ ìœ„ì¹˜ì—ì„œ ëª©í‘œ ìœ„ì¹˜ë¡œ ì´ë™í•  ê²ƒ
+            // ë§¤ í”„ë ˆì„ ì´ë™ ê±°ë¦¬
             float step = moveSpeed * Time.deltaTime;
             transform.position = UnityEngine.Vector3.MoveTowards(transform.position, targetPosition, step);
 
-            // ¸ñÇ¥ À§Ä¡¿¡ µµ´ŞÇÏ¸é ÀÌµ¿ ÁßÁö
-            // ¸ñÇ¥À§Ä¡¿Í ÇöÀç À§Ä¡ÀÇ Â÷ÀÌ°¡ 0.1fº¸´Ù ÀÛ´Ù¸é Á¤Áö
+            // ëª©í‘œ ìœ„ì¹˜ì— ë„ë‹¬í•˜ë©´ ì´ë™ ì¤‘ì§€
+            // ëª©í‘œìœ„ì¹˜ì™€ í˜„ì¬ ìœ„ì¹˜ì˜ ì°¨ì´ê°€ 0.1fë³´ë‹¤ ì‘ë‹¤ë©´ ì •ì§€
             if (UnityEngine.Vector3.Distance(transform.position, targetPosition) < 0.1f)
             {
                 transform.position = targetPosition;
@@ -151,14 +151,14 @@ public class RosSubscriber : MonoBehaviour
             }
         }
 
-        // È¸ÀüÇÒ ¼ö ÀÖ´Â »óÅÂ¶ó¸é
+        // íšŒì „í•  ìˆ˜ ìˆëŠ” ìƒíƒœë¼ë©´
         if (isRotating)
         {
-            // ÇöÀç È¸Àü¿¡¼­ ¸ñÇ¥ È¸ÀüÀ¸·Î È¸Àü
+            // í˜„ì¬ íšŒì „ì—ì„œ ëª©í‘œ íšŒì „ìœ¼ë¡œ íšŒì „
             transform.rotation = UnityEngine.Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-            // ¸ñÇ¥ È¸Àü µµ´Ş ½Ã È¸Àü ÁßÁö
-            // ¸¶Âù°¡Áö·Î ¸ñÇ¥ È¸Àü°ú ÇöÀç È¸Àü Â÷ÀÌ°¡ 1.0fº¸´Ù ÀÛ´Ù¸é Á¤Áö ( È¸ÀüÀº Á» ´õ Å« °ªÀ¸·Î ¼³Á¤ÇØÁàµµ Å« Â÷ÀÌ°¡ ³ªÁö ¾ÊÀ½ )
+            // ëª©í‘œ íšŒì „ ë„ë‹¬ ì‹œ íšŒì „ ì¤‘ì§€
+            // ë§ˆì°¬ê°€ì§€ë¡œ ëª©í‘œ íšŒì „ê³¼ í˜„ì¬ íšŒì „ ì°¨ì´ê°€ 1.0fë³´ë‹¤ ì‘ë‹¤ë©´ ì •ì§€ ( íšŒì „ì€ ì¢€ ë” í° ê°’ìœ¼ë¡œ ì„¤ì •í•´ì¤˜ë„ í° ì°¨ì´ê°€ ë‚˜ì§€ ì•ŠìŒ )
             if (UnityEngine.Quaternion.Angle(transform.rotation, targetRotation) < 1.0f)
             {
                 transform.rotation = targetRotation;
